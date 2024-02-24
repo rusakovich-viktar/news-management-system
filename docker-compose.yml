@@ -1,0 +1,80 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=prod_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      retries: 5
+
+  elasticsearch:
+    image: elasticsearch:7.10.1
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+#      - ELASTIC_USERNAME=elastic
+#      - ELASTIC_PASSWORD=MyPw123
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - "esdata:/usr/share/elasticsearch/data"
+      - "./news-project/src/main/resources/config/elk-config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--bind", "0.0.0.0"]
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+#
+#  micro-comments:
+#    build: ./comments-project
+#    ports:
+#      - "8082:8082"
+#    depends_on:
+#      elasticsearch:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+
+#  micro-news:
+#    build: ./news-project
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      elasticsearch:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+
+volumes:
+  dbdata:
+  esdata:
+
