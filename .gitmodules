@@ -1,0 +1,12 @@
+[submodule "micro-news"]
+	path = micro-news
+	url = https://github.com/rusakovich-viktar/micro-news.git
+[submodule "micro-comments"]
+	path = micro-comments
+	url = https://github.com/rusakovich-viktar/micro-comments.git
+[submodule "micro-gateway"]
+	path = micro-gateway
+	url = https://github.com/rusakovich-viktar/micro-gateway.git
+[submodule "micro-exception-starter"]
+	path = micro-exception-starter
+	url = https://github.com/rusakovich-viktar/micro-exception-starter.git
