@@ -2,7 +2,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15.1-alpine
-    restart: always
+    #    restart: always
     environment:
       - POSTGRES_DB=prod_db
       - POSTGRES_USER=postgres
@@ -22,15 +22,15 @@ services:
       db:
         condition: service_healthy
     environment:
-#      - ELASTIC_USERNAME=elastic
-#      - ELASTIC_PASSWORD=MyPw123
+      #      - ELASTIC_USERNAME=elastic
+      #      - ELASTIC_PASSWORD=MyPw123
       - "discovery.type=single-node"
     ports:
       - "9200:9200"
       - "9300:9300"
     volumes:
       - "esdata:/usr/share/elasticsearch/data"
-      - "./news-project/src/main/resources/config/elk-config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro"
+      - "./micro-search/src/main/resources/config/elk-config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
       interval: 10s
@@ -42,7 +42,7 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
-    command: ["redis-server", "--bind", "0.0.0.0"]
+    command: [ "redis-server", "--bind", "0.0.0.0" ]
     depends_on:
       elasticsearch:
         condition: service_healthy

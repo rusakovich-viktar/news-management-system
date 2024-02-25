@@ -10,3 +10,6 @@
 [submodule "micro-exception-starter"]
 	path = micro-exception-starter
 	url = https://github.com/rusakovich-viktar/micro-exception-starter.git
+[submodule "micro-search"]
+	path = micro-search
+	url = https://github.com/rusakovich-viktar/micro-search.git
