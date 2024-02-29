@@ -13,3 +13,6 @@
 [submodule "micro-search"]
 	path = micro-search
 	url = https://github.com/rusakovich-viktar/micro-search.git
+[submodule "logger-aspect-starter"]
+	path = logger-aspect-starter
+	url = https://github.com/rusakovich-viktar/logger-aspect-starter.git
