@@ -16,3 +16,6 @@
 [submodule "logger-aspect-starter"]
 	path = logger-aspect-starter
 	url = https://github.com/rusakovich-viktar/logger-aspect-starter.git
+[submodule "micro-config-server"]
+	path = micro-config-server
+	url = https://github.com/rusakovich-viktar/micro-config-server.git
