@@ -6,6 +6,9 @@ gradle build publish
 cd ../logger-aspect-starter
 gradle build publish
 
+cd ../micro-config-server
+gradle build -x test
+
 cd ../micro-news
 gradle build -x test
 
