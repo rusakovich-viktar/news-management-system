@@ -1,6 +1,6 @@
-# Система управления новостями
+# Система управления новостями - News Management System
 
-## Разработать RESTful web-service, реализующей функционал для работы с системой управления новостями.
+## RESTful web-service, реализующей функционал для работы с системой управления новостями.
 <details>
  <summary><strong>
  подробнее - раскрывающийся список заданий
@@ -115,13 +115,17 @@ spring-boot-starter-ы.
 ```
 - В контексте приложения условно будем считать что профиль prod будет применяться для запуска и взаимодействия микосервисов в docker сети.
 Для локальной разработки, а также для тестирования будем использовать профиль dev.
-Профили конфигурируются через micro-config-server-cloud, поэтому он должен быть запущен или в контейнере для профиля prod или локально для профиля dev.
+- Профили конфигурируются через micro-config-server-cloud, поэтому он должен быть запущен или в контейнере для профиля prod или локально для профиля dev.
+- Для смены профиля dev(локально и тесты) и prod(в докере) необходимо в папках каждого проекта в application.yml сменить активный профиль на 
+profiles: active: dev 
+или 
+profiles: active: prod
 ```
 ### Подключен Liquibase — система управления миграциями базы данных. Настроены контексты и профили:
 ```
 - При запуске сервиса news накатываются скрипты на рабочую БД (генерируются необходимые таблицы из одного файла и наполняются таблицы данными из другого файла, 20 новостей и 10 комментариев, связанных с каждой новостью.
 при запуске тестов подхватывается скрипт по генерации необходимых таблиц + дополнительно из sql файлов заполняются таблицы во время тестирования.
-Реализовано - через разные changelog и контексты Liquibase.
+Реализовано - через разные changelog и контексты Liquibase. Для тестов подхватывается еще скрипт наполнения таблиц.
 ``` 
 
 ### Создана и подключена реализация кэша, для хранения сущностей:
@@ -142,10 +146,10 @@ spring-boot-starter-ы.
 <details>
   <summary><strong>Скрины покрытия</strong></summary>
 
-![структура](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/news-coverage.jpg)
-![структура](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/com-coverage.jpg)
-![структура](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/search-coverage.jpg)
-![структура](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/gate-coverage.jpg)
+![news-coverage](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/news-coverage.jpg)
+![comments-coverage](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/com-coverage.jpg)
+![search-coverage](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/search-coverage.jpg)
+![gateway-coverage](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/gate-coverage.jpg)
 </details>
 
 	Весь код покрыт юнит-тестами от 80% (сервисный слой – 100%)
@@ -161,7 +165,7 @@ spring-boot-starter-ы.
 <details>
   <summary><strong>Скрины работающих контейнеров</strong></summary>
 
-![структура](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/Снимок%20экрана%202024-03-06%20012000.jpg)
+![docker](https://github.com/rusakovich-viktar/NMS-resourses/raw/rusakovich-viktar-patch-1/Снимок%20экрана%202024-03-06%20012000.jpg)
 
 </details>
 
@@ -170,14 +174,16 @@ spring-boot-starter-ы.
 ```
 
 # Как запустить приложение
-В данном проекте все микросервисы расположены как подмодули репозитория News Management System. Несмотря на то, что они называются подмодулями, это абсолютно самостоятельные проекты, никак не связанные между собой зависимостями и не являющие подмодулями один для одного. Это сделано для удобства их хранения и упрощения ссылок друг на друга.
-1. Чтобы склонировать репозиторий с GitHub вместе со всеми его подмодулями, вы можете использовать следующую команду:
+У вас должен быть установлен [Gradle](https://gradle.org/next-steps/?version=8.5&format=all) для сборки проектов и [Docker](https://www.docker.com/products/docker-desktop/) для создания контейнеров.
+
+В данном проекте все микросервисы расположены как подмодули репозитория News Management System. Несмотря на то, что они называются подмодулями, это абсолютно самостоятельные проекты, никак не связанные между собой зависимостями и не являющие подмодулями один для одного. Это сделано для удобства их хранения и управления, а также для упрощения ссылок друг на друга.
+1. **Чтобы склонировать репозиторий с GitHub вместе со всеми его подмодулями, вы можете использовать следующую команду:**
 
 ```bash
 git clone --recurse-submodules https://github.com/rusakovich-viktar/news-management-system.git
 ```
 
-или же можно пойти стандартным путем склонировав его себе, а после синхронизировать подмодули.
+или же можно пойти стандартным путем склонировав его себе, а после синхронизировать подмодули двумя последующими командами:
  ```
 - git clone https://github.com/rusakovich-viktar/news-management-system.git
  ```
@@ -185,7 +191,7 @@ git clone --recurse-submodules https://github.com/rusakovich-viktar/news-managem
 - git submodule update --init --recursive
  ```
 
-2. Запустить команду 
+2. **Запустить команду**
 
 `./init.sh`
 
@@ -194,5 +200,8 @@ git clone --recurse-submodules https://github.com/rusakovich-viktar/news-managem
 `/init.sh`
 
 в зависимости от типа системы.
-Данная команда запустит баш скрипт который по очереди зайдет в каждый проект и соберет его, начав со стартеров, зарегистрирует стартеры в локальном репозитории, чтобы прочие микросервисы могли использовать зависимости при сборке своих проектов, а также по завершении автоматически выполнится команда  `docker-compose up`, которая запустит в работу инструкции по сборке проекта, описанные в docker-compose файле.
+Данная команда запустит баш скрипт который сам по очереди зайдет в каждый проект и соберет его командой `gradle build`, начав со стартеров, зарегистрирует стартеры в локальном репозитории `gradle build publish`, чтобы прочие микросервисы могли использовать зависимости при сборке своих проектов, а также по завершении автоматически выполнится команда  `docker-compose up`, которая запустит в работу инструкции по сборке проекта, описанные в *docker-compose* файле. Причем запуск начнется с сервера конфигураций, чтобы он раздал конфигурации прочим микросервисам.
+
+
+`В данном случае я отказался от двухфазной сборки проектов, потом у что иначе сложно зарегистрировать стартеры и начать сборку одной командой.`
 
