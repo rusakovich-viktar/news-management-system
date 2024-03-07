@@ -1,0 +1,100 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15.1-alpine
+    restart: on-failure
+    environment:
+      - POSTGRES_DB=prod_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      retries: 5
+
+  elasticsearch:
+    image: elasticsearch:7.10.1
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - "esdata:/usr/share/elasticsearch/data"
+      - "./micro-search/src/main/resources/config/elk-config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "elasticsearch:9200" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: "redis:alpine"
+    restart: on-failure
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--bind", "0.0.0.0" ]
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cloud-config-server:
+    restart: on-failure
+    build: ./micro-config-server
+    ports:
+      - "8888:8888"
+
+
+  micro-comments:
+    restart: on-failure
+    build: ./micro-comments
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+
+  micro-news:
+    restart: on-failure
+    build: ./micro-news
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+
+  micro-gateway:
+    restart: on-failure
+    build: ./micro-gateway
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+
+  micro-search:
+    restart: on-failure
+    build: ./micro-search
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8083:8083"
+
+volumes:
+  dbdata:
+  esdata:
