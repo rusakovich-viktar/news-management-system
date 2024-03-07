@@ -209,7 +209,7 @@ git clone --recurse-submodules https://github.com/rusakovich-viktar/news-managem
 - git submodule update --init --recursive
  ```
 2. **Перейти в созданную папку**
-	 `/cd news-management-system`
+	 `cd news-management-system`
 3. **Запустить команду**
 
 `./init.sh`
