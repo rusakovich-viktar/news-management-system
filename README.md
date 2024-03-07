@@ -203,10 +203,10 @@ git clone --recurse-submodules https://github.com/rusakovich-viktar/news-managem
 
 или же можно пойти стандартным путем склонировав его себе, а после синхронизировать подмодули двумя последующими командами:
  ```
-- git clone https://github.com/rusakovich-viktar/news-management-system.git
+git clone https://github.com/rusakovich-viktar/news-management-system.git
  ```
  ```
-- git submodule update --init --recursive
+git submodule update --init --recursive
  ```
 2. **Перейти в созданную папку**
 	 `cd news-management-system`
